@@ -6,9 +6,9 @@ Eliezer is a text embedding and question-answering application built using Flask
 
 The core features of the project include:
 
-1. Text Embedding: Users can input new texts into the application, and the system will perform text embedding using the Gptebnedding model. The embedded texts are stored in a Google Cloud Storage bucket for efficient retrieval and processing.
+1. **Text Embedding:** Users can input new texts into the application, and the system will perform text embedding using the Gptebnedding model. The embedded texts are stored in a Google Cloud Storage bucket for efficient retrieval and processing.
 
-2. Question Answering: Users can ask questions based on the pre-embedded texts, and the system will provide answers by leveraging the embedded text database. The application uses OpenAI's Completion API to generate detailed and accurate responses.
+2. **Question Answering:** Users can ask questions based on the pre-embedded texts, and the system will provide answers by leveraging the embedded text database. The application uses OpenAI's Completion API to generate detailed and accurate responses.
 
 The project consists of the following files:
 ## File Descriptions
