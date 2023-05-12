@@ -1,5 +1,16 @@
 # Project Name: Eliezer
 
+## Project Description
+
+Eliezer is a text embedding and question-answering application built using Flask and OpenAI's Gptebnedding model. The project aims to provide a user-friendly interface for embedding new texts and answering questions based on the pre-embedded text database.
+
+The core features of the project include:
+
+1. Text Embedding: Users can input new texts into the application, and the system will perform text embedding using the Gptebnedding model. The embedded texts are stored in a Google Cloud Storage bucket for efficient retrieval and processing.
+
+2. Question Answering: Users can ask questions based on the pre-embedded texts, and the system will provide answers by leveraging the embedded text database. The application uses OpenAI's Completion API to generate detailed and accurate responses.
+
+The project consists of the following files:
 ## File Descriptions
 
 - **app.py**: This file contains the main Flask application code. It imports the necessary modules, including Flask and Gptebnedding, and creates a Flask web application instance. It defines a route for the home page ("/") that handles both GET and POST requests. For GET requests, it renders the home.html template, which is responsible for displaying the form to submit a question. For POST requests, it retrieves the question from the submitted form data, passes it to the Gptebnedding.AnswerQuestion() function from the Gptebnedding module to get the answer, and renders the answer.html template, which displays the original question and the corresponding answer.
