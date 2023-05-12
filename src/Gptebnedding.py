@@ -42,6 +42,7 @@ QUESTION_COMPLETIONS_API_PARAMS = {
     "model": COMPLETIONS_MODEL,
 }
 
+# Retrive the open AI api key
 def get_api_key():
 
     # Authenticate to the Secret Manager API
@@ -53,7 +54,9 @@ def get_api_key():
     api_key = os.getenv("ChatGPTKey")
 
     return api_key
-def InsertEmbdings2(text):
+
+# Gets a text and insert its embdings to local file and cloud blob
+def InsertEmbdings(text):
         
     # Loop through each text file and perform GPT embedding using ChatGPT API
     embeddings = []
@@ -65,29 +68,14 @@ def InsertEmbdings2(text):
         db.save(df)
         print('Row inserted successfully')
 
-def InsertEmbdings():
-
-    # Retrieve all the text files from the specified bucket
-    bucket = storage_client.get_bucket(BUCKET_NAME)
-    blob_list = bucket.list_blobs()
-    text_files = [blob for blob in blob_list if blob.name.endswith('.pdf')]
-
-        
-    # Loop through each text file and perform GPT embedding using ChatGPT API
-    embeddings = []
-    for text_file in text_files:
-        text = text_file.download_as_text()
-        text_embedding = get_embedding(text, engine='text-embedding-ada-002')
-        if  text_embedding:
-             df = df.append({"message":text, "ada_search": text_embedding},ignore_index=True)
-    db.save(df)
-    print('Row inserted successfully')
+# gets a question and provide the answer to the question
 def AnswerQuestion(question):
     prompt = construct_prompt(question)
     response = openai.Completion.create(prompt=prompt, **QUESTION_COMPLETIONS_API_PARAMS)
     print(response["choices"][0]["text"])
     return response["choices"][0]["text"]
 
+# Constructing  the prompt for the question based on the question and three most similler massages
 def construct_prompt(question, top_n=3):
     
     # Get the context
@@ -105,6 +93,7 @@ def generate_context(question, top_n=3):
     context = '\n '.join(top_messages)
     return context
 
+# Retrieve the question and return the most similar message from the stored message database
 def return_most_similiar(question, top_n=3):
 
     df=db.get()
@@ -120,48 +109,12 @@ def return_most_similiar(question, top_n=3):
 
     return most_similiar
 
-def Embooks2():
-    
-    
-    # Create the google storage client
-    storage_client = storage.Client()
-    bucket_name = 'bookembdding'
-    bucket = storage_client.bucket(bucket_name)
 
-    # Define regex pattern to split text into sentences
-    sentence_pattern = re.compile(r'(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?)\s')
-    
-    # Get the blob containing the PDF file
-    blob_name = 'vication.pdf'
-    blob = bucket.blob(blob_name)
-
-    # Download the PDF file to memory
-    pdf_bytes = blob.download_as_bytes()
-
-    # Open the pdf file
-    pdf_file = io.BytesIO(pdf_bytes)
-    pdf_file = PdfReader(pdf_file)
-
-    # Insert all the pages into one tex string
-    text = ''
-    for page in range(len(pdf_file.pages)):
-        extracted_text  =    pdf_file.pages[page].extract_text()
-        text += extracted_text
-
-    # Split text into groups of 5 sentences
-    sentences = sentence_pattern.split(text)
-    group_size = 10
-    groups = [sentences[i:i+group_size] for i in range(0, len(sentences), group_size)]
-
-    # Saveing each pargrph after translation to the blob    
-    for i, group in enumerate(groups):
-        text = " ".join(group)
-        text = text.replace('\n', ' ')
-        translated_text = InsertEmbdings2(text)
-
+# Process a file that has been saved in the bucket by embedding each group of five sentences together. 
+# The function combines the five sentences into a single text and performs embedding using a pre-trained model. 
+# The resulting vector is then saved to both the local file and the cloud file for further use.
 def Embooks():
     
-    
     # Create the google storage client
     storage_client = storage.Client()
     bucket_name = 'bookembdding'
@@ -196,10 +149,12 @@ def Embooks():
     for i, group in enumerate(groups):
         text = " ".join(group)
         text = text.replace('\n', ' ')
-        translated_text = InsertEmbdings2(text)
+        translated_text = InsertEmbdings(text)
 
 # Setup the open AI api key
 openai.api_key = get_api_key()
+
+# Loading the embedding DB
 db = google_blob_dbaccess.GoogleBucketDbAccess()
 db.ensureExists()
 

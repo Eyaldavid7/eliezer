@@ -57,6 +57,6 @@ def Embooks():
     for i, group in enumerate(groups):
         text = " ".join(group)
         text = text.replace('\n', ' ')
-        translated_text = Gptebnedding.InsertEmbdings2(text)
+        translated_text = Gptebnedding.InsertEmbdings(text)
 
 
