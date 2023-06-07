@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "axios": "^1.4.0",
+    "nanomatch": "^1.2.13",
+    "openai": "^3.2.1"
+  }
+}
