@@ -38,11 +38,7 @@ def answer_question(query):
     texts = split_documents_into_chunks(pages)
     chain = prepare_model_embedding(texts)
 
-    print('\n\n\n\n\n-----------------')
-    #print('wikipedia search terms:', wikipedia_search_term)
-    print('question:', query)
-    print('answer:', chain.run(query))
-    print('-----------------\n\n')
+    return chain.run(query)
 
 
 def concatenate_pdfs(files):

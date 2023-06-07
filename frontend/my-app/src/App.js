@@ -32,18 +32,12 @@ function App() {
             trigger: 'user_question'
         }, {
             id: 'user_question',
-     
-            // This message appears in
-            // the bot chat bubble
             user: true,
             trigger: 'bot_answer'
         },
         {
             id: 'bot_answer',
-            
-            // This message appears in
-            // the bot chat bubble
-            component: <Answer />,
+            component: <Answer/>,
             asMessage: true,
             trigger: 'user_question'
         }
@@ -53,9 +47,6 @@ function App() {
     return (
         <div className="App">
                 <ChatBot
- 
-                    // This appears as the header
-                    // text for the chat bot
                     headerTitle="Eliezer"
                     steps={steps}
                     {...config}
