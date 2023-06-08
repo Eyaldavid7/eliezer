@@ -20,7 +20,6 @@ const theme = {
 };
  
 const config = {
-    floating: true,
     botAvatar: logo,
 };
  
@@ -57,12 +56,11 @@ function App() {
                             width='40vw' 
                             heigh='40vh'/>      Eliezer
                     </p>}
-                    bubbleStyle={{ direction: "rtl" , fontSize: '2vh'}}
-                    avatarStyle={{height:"5vh"}}
+                    bubbleStyle={{ direction: "rtl" , fontSize: '3vh'}}
+                    avatarStyle={{height:"7vh"}}
                     inputStyle={{direction: "rtl", fontSize: '2vh'}}
-                    floatingStyle={{height:"10vh", width:"10vh"}}
-                    width="25vw"
-                    height="70vh"
+                    width="100vw"
+                    height="100vh"
                     steps={steps}
                     {...config}
                 />
