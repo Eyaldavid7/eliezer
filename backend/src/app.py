@@ -9,7 +9,6 @@ cors = CORS(app)
 @app.route('/', methods=['POST'])
 def get_answer():
     query = request.data.decode("utf-8")[1:-1] 
-    print(query)
     answer = ImprovedGptembedding.answer_question(query)
     return answer
 

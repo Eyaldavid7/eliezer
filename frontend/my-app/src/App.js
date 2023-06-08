@@ -3,24 +3,25 @@ import './App.css';
 import ChatBot from 'react-simple-chatbot';
 import { ThemeProvider } from 'styled-components';
 import logo from './imgs/logo.png'
+import mcs_logo from './imgs/mcs_logo.png'
 import Answer from './Answer.js';
- 
+import { height, padding } from '@mui/system';
+
 // Creating our own theme
 const theme = {
-    background: '#C9FF8F',
-    headerBgColor: '#197B22',
-    headerFontSize: '20px',
-    botBubbleColor: '#0F3789',
+    background: '#FAEBD7',
+    headerBgColor: '#FF8C00',
+    headerFontSize: '2.5vh',
+    botBubbleColor: 'white',
     headerFontColor: 'white',
-    botFontColor: 'white',
-    userBubbleColor: '#FF5733',
-    userFontColor: 'white',
+    botFontColor: 'black',
+    userBubbleColor: 'white',
+    userFontColor: 'black'
 };
  
-// Set some properties of the bot
 const config = {
     floating: true,
-    botAvatar: logo
+    botAvatar: logo,
 };
  
 function App() {
@@ -28,29 +29,44 @@ function App() {
     const steps = [
         {
             id: 'bot_first_msg',
-            message: 'Hey I\'m Eliezer, How can I help you?',
-            trigger: 'user_question'
+            message: 'שלום אני אליעזר, איך אוכל לעזור?',
+            trigger: 'user_question',
         }, {
             id: 'user_question',
             user: true,
-            trigger: 'bot_answer'
+            trigger: 'bot_answer',
+            placeholder: "הקלד שאלה...",
         },
         {
             id: 'bot_answer',
             component: <Answer/>,
             asMessage: true,
-            trigger: 'user_question'
+            trigger: 'user_question',
+            placeholder: "מחפש תשובה...",
         }
     
     ]; 
 
     return (
         <div className="App">
+            <ThemeProvider theme={theme}>
                 <ChatBot
-                    headerTitle="Eliezer"
+                    headerTitle={
+                    <p style={{'padding-top':'1vh'}}>
+                        <img src={mcs_logo} 
+                            width='40vw' 
+                            heigh='40vh'/>      Eliezer
+                    </p>}
+                    bubbleStyle={{ direction: "rtl" , fontSize: '2vh'}}
+                    avatarStyle={{height:"5vh"}}
+                    inputStyle={{direction: "rtl", fontSize: '2vh'}}
+                    floatingStyle={{height:"10vh", width:"10vh"}}
+                    width="25vw"
+                    height="70vh"
                     steps={steps}
                     {...config}
                 />
+            </ThemeProvider>
         </div>
     );
 }

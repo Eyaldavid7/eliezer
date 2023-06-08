@@ -1,5 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from "react";
+import {SyncLoader} from 'react-spinners';
 
 
 function Answer(props) {
@@ -22,7 +23,16 @@ function Answer(props) {
     return (
         <div className="Answer">
             <p>
-                {message?message:"I'm Thinking..."}
+                {message?
+                message:
+                <div>
+                    <SyncLoader 
+                        size={5}
+                        speedMultiplier = {0.6}
+                        color = {'#000000'}
+                     />
+                </div>
+                }
             </p>
         </div>
     );
