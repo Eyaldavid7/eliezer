@@ -11,13 +11,10 @@ import db_dtypes
 import json
 import ast
 import google_blob_dbaccess
-import TranslateBook
 from PyPDF2 import PdfReader
 import re
 import io
-
-
-
+import dotenv
 
 
 
@@ -26,15 +23,14 @@ app = Flask(__name__)
 # Set the project ID and dataset ID
 project_id = 'quickstart-1602611748801'
 dataset_id = 'CheckCode'
-BUCKET_NAME = 'bookembdding'
-TABLE_NAME = 'BookEmbding'
+BUCKET_NAME = 'tals-openai-bucket'
  # Get the big quary client
 bigquery_client = bigquery.Client(project='quickstart-1602611748801')
 
 # Get the storage client
 storage_client = storage.Client(project='quickstart-1602611748801')
 
-COMPLETIONS_MODEL = "text-davinci-003"
+COMPLETIONS_MODEL = "gpt-3.5-turbo-16k"
 QUESTION_COMPLETIONS_API_PARAMS = {
     # We use temperature of 0.0 because it gives the most predictable, factual answer.
     "temperature": 0.0,
@@ -64,16 +60,57 @@ def InsertEmbdings(text):
 
     if text != '':
         text_embedding = get_embedding(text, engine='text-embedding-ada-002')
-        df = df.append({"message":text, "ada_search": text_embedding},ignore_index=True)
+        df = df._append({"message":text, "ada_search": text_embedding},ignore_index=True)
         db.save(df)
         print('Row inserted successfully')
 
 # gets a question and provide the answer to the question
 def AnswerQuestion(question):
-    prompt = construct_prompt(question)
-    response = openai.Completion.create(prompt=prompt, **QUESTION_COMPLETIONS_API_PARAMS)
+    #db.get()
+    with open('360401.pdf', 'rb') as file:
+        reader = PdfReader(file)
+        text = ''
+        for page in reader.pages:
+            text += page.extract_text()
+    chunk_length = 15000
+    chunks = [text[i:i+chunk_length] for i in range(0, len(text), chunk_length)]
+    answer = ""
+    for chunk in chunks:
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant. Please determine whether an answer was found. The output should only contain the short answer yes or no."},
+            {"role": "user", "content": f"הנה פקודה: {chunk}"},
+            {"role": "user", "content": f"האם התשובה לשאלה {question} נמצאת בפקודה?"},
+        ]
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo-16k",
+            messages=messages,
+            max_tokens=1000
+        )
+
+        res = response['choices'][0]['message']['content']
+
+        if res == "כן" or res == "yes":
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": f"הנה פקודה: {chunk}"},
+                {"role": "user", "content": f"{question} לפי הפקודה?"},
+            ]
+            response = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo-16k",
+                messages=messages,
+                max_tokens=1000
+            )
+            res = response['choices'][0]['message']['content']
+            if len(res) > len(answer):
+                answer = res
+    
+    if answer == "":
+        answer = "לא מצאתי תשובה מתאימה לשאלה שלך"
+    print(answer)
+
+    """
     print(response["choices"][0]["text"])
-    return response["choices"][0]["text"]
+    return response["choices"][0]["text"]"""
 
 # Constructing  the prompt for the question based on the question and three most similler massages
 def construct_prompt(question, top_n=3):
@@ -117,14 +154,14 @@ def Embooks():
     
     # Create the google storage client
     storage_client = storage.Client()
-    bucket_name = 'bookembdding'
+    bucket_name = 'tals-openai-bucket'
     bucket = storage_client.bucket(bucket_name)
 
     # Define regex pattern to split text into sentences
     sentence_pattern = re.compile(r'(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?)\s')
     
     # Get the blob containing the PDF file
-    blob_name = 'vication.pdf'
+    blob_name = '360406.pdf'
     blob = bucket.blob(blob_name)
 
     # Download the PDF file to memory
@@ -152,6 +189,7 @@ def Embooks():
         translated_text = InsertEmbdings(text)
 
 # Setup the open AI api key
+dotenv.load_dotenv()
 openai.api_key = get_api_key()
 
 # Loading the embedding DB

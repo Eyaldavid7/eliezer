@@ -1,6 +1,7 @@
 import dbaccess
 import pandas as pd
 from google.cloud import storage
+from langchain.document_loaders import PyPDFLoader
 
 class GoogleBucketDbAccess():
   def __init__(self):
@@ -11,23 +12,22 @@ class GoogleBucketDbAccess():
   def get(self):
     # Create the google storage client
     storage_client = storage.Client()
-    bucket_name = 'bookembdding'
+    bucket_name = 'tals-openai-bucket'
     bucket = storage_client.bucket(bucket_name)
 
     # Get the blob containing the PDF file
-    blob_name = 'Embding3.csv'
+    blob_name = 'embding.pdf'
     blob = bucket.blob(blob_name)
+  
+    blob.download_to_filename("local_db.pdf")
 
-    blob.download_to_filename(self.LOCAL_FILENAME)
-    df = pd.read_csv(self.LOCAL_FILENAME)
-    return df
   
 # The save function saves a DataFrame to a local CSV file specified by LOCAL_FILENAME and to the google cloud blob
   def save(self, df):
     df.to_csv(self.LOCAL_FILENAME, index=False)
        # Create the google storage client
     storage_client = storage.Client()
-    bucket_name = 'bookembdding'
+    bucket_name = 'tals-openai-bucket'
     bucket = storage_client.bucket(bucket_name)
 
     # Get the blob containing the PDF file
@@ -40,7 +40,7 @@ class GoogleBucketDbAccess():
   def ensureExists(self):
     # Create the google storage client
     storage_client = storage.Client()
-    bucket_name = 'bookembdding'
+    bucket_name = 'tals-openai-bucket'
     bucket = storage_client.bucket(bucket_name)
 
     # Get the blob containing the PDF file
