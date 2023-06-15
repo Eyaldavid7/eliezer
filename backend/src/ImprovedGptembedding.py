@@ -13,6 +13,7 @@ from langchain.document_loaders import PyPDFLoader
 import io
 import openai
 import aspose.words as aw
+from google.cloud import bigquery
 
 
 def split_documents_into_chunks(documents, chunk_size=800, chunk_overlap=0):
@@ -26,18 +27,30 @@ def load_environment_variables():
 
 def prepare_model_embedding(texts):
     embeddings = OpenAIEmbeddings(openai_api_key=os.environ['OPENAI_API_KEY'])
-    doc_search = Chroma.from_documents(texts, embeddings)
-    return RetrievalQA.from_chain_type(llm=OpenAI(), retriever=doc_search.as_retriever())
+    #doc_search = Chroma.from_documents(texts, embeddings)
+    texts_search = Chroma.from_texts(texts, embeddings)
+    return RetrievalQA.from_chain_type(llm=OpenAI(), retriever=texts_search.as_retriever())
 
 
 def answer_question(query):
     #update local db
-    db.get()
+    """db.get()
     loader = PyPDFLoader("local_db.pdf")
     pages = loader.load_and_split()
-    texts = split_documents_into_chunks(pages)
-    chain = prepare_model_embedding(texts)
+    texts = split_documents_into_chunks(pages)"""
+    client = bigquery.Client()
+    project = "turkiz-starfish-mcs-tst-363113"
+    dataset_id = "tals_open_ai_dataset"
 
+    dataset_ref = bigquery.DatasetReference(project, dataset_id)
+    table_ref = dataset_ref.table("open_ai_pkuda_table")
+    table = client.get_table(table_ref)
+
+    df = client.list_rows(table).to_dataframe()
+    texts = []
+    for data in df['values']:
+            texts.append(data)
+    chain = prepare_model_embedding(texts)
     return chain.run(query)
 
 

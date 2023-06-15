@@ -5,7 +5,6 @@ import { ThemeProvider } from 'styled-components';
 import logo from './imgs/logo.png'
 import mcs_logo from './imgs/mcs_logo.png'
 import Answer from './Answer.js';
-import { height, padding } from '@mui/system';
 
 // Creating our own theme
 const theme = {
