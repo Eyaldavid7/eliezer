@@ -7,7 +7,7 @@ class GoogleBucketDbAccess():
   def __init__(self):
     self.LOCAL_FILENAME = 'local_db.pdf'
     self.storage_client = storage.Client()
-    self.bucket = self.storage_client.bucket('tals-openai-bucket')
+    self.bucket = self.storage_client.bucket('tals-openai-bucket-eliezer')
     self.blob = self.bucket.blob('embding.pdf')
 
   def get(self):

@@ -10,8 +10,6 @@ import google_blob_dbaccess
 from google.cloud import storage
 from PyPDF2 import PdfReader
 from langchain.document_loaders import PyPDFLoader
-import io
-import openai
 import aspose.words as aw
 from google.cloud import bigquery
 
@@ -39,7 +37,7 @@ def answer_question(query):
     pages = loader.load_and_split()
     texts = split_documents_into_chunks(pages)"""
     client = bigquery.Client()
-    project = "turkiz-starfish-mcs-tst-363113"
+    project = "mod-turkiz-eliezer-dev-1"
     dataset_id = "tals_open_ai_dataset"
 
     dataset_ref = bigquery.DatasetReference(project, dataset_id)
