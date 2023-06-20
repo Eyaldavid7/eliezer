@@ -1,0 +1,14 @@
+{
+  "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@mui/material": "^5.13.4",
+    "axios": "^1.4.0",
+    "nanomatch": "^1.2.13",
+    "openai": "^3.2.1",
+    "react-loader-spinner": "^5.3.4",
+    "react-rounded-image": "^2.0.15",
+    "react-spinners": "^0.13.8",
+    "rsuite": "^5.35.0"
+  }
+}
