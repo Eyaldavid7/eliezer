@@ -72,6 +72,7 @@ def AnswerQuestion(question):
         text = ''
         for page in reader.pages:
             text += page.extract_text()
+    print(text)
     chunk_length = 15000
     chunks = [text[i:i+chunk_length] for i in range(0, len(text), chunk_length)]
     answer = ""
