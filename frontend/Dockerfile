@@ -13,8 +13,11 @@ RUN npm install --production
 # Copy the rest of the application code
 COPY . .
 
-# Expose port 8080
-EXPOSE 8080
+# Expose port 80
+EXPOSE 80
+
+# Set the working directory for running the code
+WORKDIR /app/my-app/src
 
 # Start the application
 CMD ["npm", "start"]
