@@ -15,15 +15,25 @@ import openai
 import aspose.words as aw
 
 
+<<<<<<< HEAD
 def load_environment_variables():
     dotenv.load_dotenv()
 
 
+=======
+>>>>>>> d2543108c91ff17679fc63203b87ca598e16bf98
 def split_documents_into_chunks(documents, chunk_size=800, chunk_overlap=0):
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=chunk_size, chunk_overlap=chunk_overlap)
     return text_splitter.split_documents(documents)
 
 
+<<<<<<< HEAD
+=======
+def load_environment_variables():
+    dotenv.load_dotenv()
+
+
+>>>>>>> d2543108c91ff17679fc63203b87ca598e16bf98
 def prepare_model_embedding(texts):
     embeddings = OpenAIEmbeddings(openai_api_key=os.environ['OPENAI_API_KEY'])
     doc_search = Chroma.from_documents(texts, embeddings)
@@ -37,8 +47,15 @@ def answer_question(query):
     pages = loader.load_and_split()
     texts = split_documents_into_chunks(pages)
     chain = prepare_model_embedding(texts)
+<<<<<<< HEAD
     return chain.run(query)
 
+=======
+
+    return chain.run(query)
+
+
+>>>>>>> d2543108c91ff17679fc63203b87ca598e16bf98
 def concatenate_pdfs(files):
     output = aw.Document()
     # Remove all content from the destination document before appending.
